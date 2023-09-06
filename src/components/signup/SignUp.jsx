@@ -3,11 +3,53 @@ import React, { useState } from "react";
 import desktopBackground from "./desktop.png";
 import error from "./error.svg";
 
+import axios from 'axios'
+
 export default function SignUp() {
   const [firstName, setFirstName] = useState(false);
   const [lastName, setLastName] = useState(false);
   const [email, setEmail] = useState(false);
   const [password, setPassword] = useState(false);
+
+  const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = ({ currentTarget: input }) => {
+    setData({ ...data, [input.name]: input.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const url = "http://localhost:8080/api/users";
+
+      /* console.log(JSON.stringify(data.firstName)) */
+      console.log(data)
+
+      const {data : res} = await axios.post(url , data)
+
+      console.log("I AM BELOW API")
+      console.log(res);
+     
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 400
+      ) {
+        setError(error.response.data.message);
+      }
+    }
+  };
 
   return (
     <div className="w-screen min-h-screen py-10 bg-custom-pink relative">
@@ -35,7 +77,10 @@ export default function SignUp() {
             </span>
           </button>
 
-          <div className="bg-white w-full p-9 flex flex-col justify-center items-center gap-3 rounded-xl z-20 shadow-3xl">
+          <form
+            className="bg-white w-full p-9 flex flex-col justify-center items-center gap-3 rounded-xl z-20 shadow-3xl"
+            onSubmit={handleSubmit}
+          >
             <div className="w-full">
               <div
                 className={`flex flex-row w-full border ${
@@ -43,11 +88,11 @@ export default function SignUp() {
                 } rounded-md py-2 pl-3 pr-3`}
               >
                 <input
-                  class="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
+                  className="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
                   placeholder="First Name"
                   type="text"
-                  name="search"
-                  required="true"
+                  name="firstName"
+                  required
                   onBlur={(e) => {
                     if (
                       e.target.value.length <= 0 ||
@@ -58,6 +103,8 @@ export default function SignUp() {
                       setFirstName(false);
                     }
                   }}
+                  onChange={handleChange}
+                  onInput={handleChange}
                 />
 
                 <img src={error} className={`${!firstName ? "hidden" : ""}`} />
@@ -81,11 +128,11 @@ export default function SignUp() {
                 } rounded-md py-2 pl-3 pr-3`}
               >
                 <input
-                  class="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
+                  className="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
                   placeholder="Last Name"
                   type="text"
-                  name="search"
-                  required="true"
+                  name="lastName"
+                  required
                   onBlur={(e) => {
                     if (
                       e.target.value.length <= 0 ||
@@ -96,6 +143,8 @@ export default function SignUp() {
                       setLastName(false);
                     }
                   }}
+                  onChange={handleChange}
+                  onInput={handleChange}
                 />
 
                 <img src={error} className={`${!lastName ? "hidden" : ""}`} />
@@ -119,11 +168,11 @@ export default function SignUp() {
                 } rounded-md py-2 pl-3 pr-3`}
               >
                 <input
-                  class="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
+                  className="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
                   placeholder="email@example.com"
                   type="email"
                   name="email"
-                  required="true"
+                  required
                   onBlur={(e) => {
                     if (
                       e.target.value.length <= 0 ||
@@ -134,6 +183,8 @@ export default function SignUp() {
                       setEmail(false);
                     }
                   }}
+                  onChange={handleChange}
+                  onInput={handleChange}
                 />
 
                 <img src={error} className={`${!email ? "hidden" : ""}`} />
@@ -157,11 +208,11 @@ export default function SignUp() {
                 } rounded-md py-2 pl-3 pr-3`}
               >
                 <input
-                  class="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
-                  placeholder=""
+                  className="placeholder:bold placeholder:text-slate-600 block bg-white w-full    focus:outline-none sm:text-sm "
+                  placeholder="Please enter your password"
                   type="password"
                   name="password"
-                  required="true"
+                  required
                   onBlur={(e) => {
                     if (
                       e.target.value.length <= 0 ||
@@ -172,6 +223,8 @@ export default function SignUp() {
                       setPassword(false);
                     }
                   }}
+                  onChange={handleChange}
+                  onInput={handleChange}
                 />
 
                 <img src={error} className={`${!password ? "hidden" : ""}`} />
@@ -188,8 +241,11 @@ export default function SignUp() {
               </div>
             </div>
 
-            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 shadow-2xl rounded w-full">
-              Claim your free trial
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 shadow-2xl rounded w-full"
+            >
+              Sign Up
             </button>
 
             <p>
@@ -198,7 +254,7 @@ export default function SignUp() {
                 Terms & Services
               </span>
             </p>
-          </div>
+          </form>
         </div>
       </div>
     </div>
